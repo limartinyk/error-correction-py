@@ -14,8 +14,22 @@ class Hamming:
         self.n = 2**r - 1
 
         num_digits = len(np.binary_repr(self.n))
-        self.decoding_matrix = np.matrix([[int(x) for x in np.binary_repr(i, num_digits)] for i in range(1, self.n)])
-        self.encoding_matrix = []
+
+        # non systematic h
+        h = np.matrix([[int(x) for x in np.binary_repr(i, num_digits)] for i in range(1, self.n+1)])
+        h = h.T
+
+        # convert last r cols to identity matrix through swapping columns
+        for i in range(r):
+            x = 2**i - 1
+            y = self.n - 1 - i
+            h[:,[x,y]] = h[:,[y,x]]
+
+
+        g = np.concatenate((np.identity(self.m, dtype=int), h[:,:self.m].T), axis=1)
+
+        self.decoding_matrix = h
+        self.encoding_matrix = g
 
     def encode(self, s):
         """Encodes a string of {1,0}* with length a multiple of m"""
