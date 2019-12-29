@@ -73,4 +73,3 @@ class Hamming:
             out += "".join([str(x) for x in curr_out[:self.m]])
         return out
 
-
